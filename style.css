@@ -1,0 +1,100 @@
+/*
+ Theme Name:     WSU People Theme
+ Theme URI:      http://people.wsu.edu
+ Description:    A child theme of the Spine for people.wsu.edu
+ Author:         philcable
+ Author URI:     
+ Template:       spine
+ Version:        0.0.1
+*/
+
+.archive .wsuwp_people_profile {
+	border-top: 1px #e4e6e7 solid;
+	clear: both;
+	padding: 1em 0;
+}
+/* Override bookmark main header styling */
+.single-wsuwp_people_profile.has-featured-image .size-gt-small main header.main-header {
+	position: relative !important;
+}
+/* "Card" */
+.degree {
+	font-style: italic;
+}
+.title,
+.department,
+.address,
+.location {
+	display: block;
+}
+.wsuwp-person-card .contact {
+	padding-bottom: 0;
+}
+.wsuwp-person-card .dashicons {
+	font-size: 14px;
+	height: 14px;
+	padding-top: 3px;
+	text-align: left;
+}
+.wsuwp-person-card .dashicons-location {
+	margin-left: -20px;
+	position: absolute;
+}
+.wsuwp-person-office {
+	display: inline-block;
+	padding-left: 20px;
+}
+/* Additional content accordions */
+.wsuwp-person-additional > dl {
+	margin: 0 0 1px 1px;
+	padding: 0 0 0 2rem;
+}
+.wsuwp-person-additional > dl:nth-of-type(odd) {
+	background-color: #fff;
+}
+.wsuwp-person-additional > dl:nth-of-type(even) {
+	background-color: #eff0f1;
+}
+.wsuwp-person-additional > dl > dt {
+	background: url(images/plus-crimson.svg) right 1rem center no-repeat;
+	cursor: pointer;
+	display: block;
+	padding: 1rem 0;
+}
+.wsuwp-person-additional > dl > dt:hover {
+	background: url(images/plus-red.svg) right 1rem center no-repeat;
+}
+.wsuwp-person-additional > dl.disclosed > dt {
+	background-image: url(images/x-crimson.svg);
+}
+.wsuwp-person-additional > dl.disclosed > dt:hover {
+	background-image: url(images/x-red.svg);
+}
+.wsuwp-person-additional > dl > dt > h2 {
+	color: #981e32;
+	padding: 0;
+}
+.wsuwp-person-additional > dl > dt > h2:hover {
+	color: #c60c30;
+	padding: 0;
+}
+.wsuwp-person-additional > dl > dd {
+	padding: 0 0 1rem 0;
+}
+
+.halves.reverse.gutter .column.two:not(.gutterless) {
+	padding-left: 2rem;
+	padding-right: 1rem;
+}
+.halves.reverse.gutter .column.one:not(.gutterless) {
+	padding-left: 1rem;
+	padding-right: 2rem;
+}
+@media only screen and (max-width:693px) {
+	.halves.reverse.gutter .column.two:not(.gutterless) {
+		padding-right: 2rem;
+	}
+	.halves.reverse.gutter .column.one:not(.gutterless) {
+		padding-left: 2rem;
+	}
+}
