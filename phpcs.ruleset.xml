@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<ruleset name="WSU People Theme">
+    <description>Sniffs for the coding standards of the WSU People Theme</description>
+
+    <rule ref="WordPress-Extra">
+        <exclude name="WordPress.NamingConventions.ValidFunctionName" />
+        <exclude name="WordPress.Files.FileName" />
+    </rule>
+</ruleset>
