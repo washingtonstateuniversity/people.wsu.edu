@@ -7,11 +7,11 @@
 		<div class="column one gutterless">
 
 			<?php
-    		if ( spine_has_featured_image() ) {
-					$featured_image_src = spine_get_featured_image_src();
-					/*?><figure class="featured-image" style="background-image: url('<?php echo esc_url( $featured_image_src ); ?>');"><?php spine_the_featured_image(); ?></figure><?php*/
-					?><figure class="wsuwp-person-photo"><?php spine_the_featured_image(); ?></figure><?php
-				}
+			if ( spine_has_featured_image() ) {
+				$featured_image_src = spine_get_featured_image_src();
+				/*?><figure class="featured-image" style="background-image: url('<?php echo esc_url( $featured_image_src ); ?>');"><?php spine_the_featured_image(); ?></figure><?php*/
+				?><figure class="wsuwp-person-photo"><?php spine_the_featured_image(); ?></figure><?php
+			}
 			?>
 
 		</div><!--/column-->
