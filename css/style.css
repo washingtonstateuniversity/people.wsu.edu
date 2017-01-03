@@ -86,7 +86,7 @@
 }
 
 .wsuwp-person-additional > dl > dd {
-	padding: 0 0 1rem 0;
+	padding: 0 0 1rem;
 }
 
 .halves.reverse.gutter .column.two:not(.gutterless) {
@@ -99,7 +99,7 @@
 	padding-right: 2rem;
 }
 
-@media only screen and (max-width:693px) {
+@media only screen and (max-width: 693px) {
 
 	.halves.reverse.gutter .column.two:not(.gutterless) {
 		padding-right: 2rem;
