@@ -101,3 +101,6 @@ add_action( 'after_setup_theme', 'WSUWP_People_Directory_Theme' );
 function WSUWP_People_Directory_Theme() {
 	return WSUWP_People_Directory_Theme::get_instance();
 }
+
+// Expose the people post type through the REST API.
+add_filter( 'wsuwp_people_show_in_rest', '__return_true' );
