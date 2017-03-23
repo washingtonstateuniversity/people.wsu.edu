@@ -104,3 +104,6 @@ function WSUWP_People_Directory_Theme() {
 
 // Expose the people post type through the REST API.
 add_filter( 'wsuwp_people_show_in_rest', '__return_true' );
+
+// Disable the display components of the people plugin.
+add_filter( 'wsuwp_people_display', '__return_false' );
