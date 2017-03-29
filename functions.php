@@ -13,7 +13,7 @@ class WSUWP_People_Directory_Theme {
 	 *
 	 * @var string String used for busting cache on scripts.
 	 */
-	var $script_version = '0.1.0';
+	public $script_version = '0.1.0';
 
 	/**
 	 * Maintain and return the one instance and initiate hooks when
@@ -39,7 +39,7 @@ class WSUWP_People_Directory_Theme {
 		add_filter( 'spine_child_theme_version', array( $this, 'theme_version' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 11 );
 		add_action( 'init', array( $this, 'rewrite_rules' ), 11 );
-		add_filter( 'post_type_link', array( $this, 'person_permalink'), 10, 2 );
+		add_filter( 'post_type_link', array( $this, 'person_permalink' ), 10, 2 );
 	}
 
 	/**
@@ -71,8 +71,8 @@ class WSUWP_People_Directory_Theme {
 	 * @since 0.1.0
 	 */
 	public function rewrite_rules() {
-		add_rewrite_tag( "%wsuwp_person%", '([^/]+)', WSUWP_People_Post_Type::$post_type_slug . '=' );
-		add_permastruct( 'person', "/profile/%wsuwp_person%/", false );
+		add_rewrite_tag( '%wsuwp_person%', '([^/]+)', WSUWP_People_Post_Type::$post_type_slug . '=' );
+		add_permastruct( 'person', '/profile/%wsuwp_person%/', false );
 	}
 
 	/**

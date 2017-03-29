@@ -41,17 +41,14 @@ if ( $university_categories ||
 				<?php
 				if ( $university_categories && ! is_wp_error( $university_categories ) ) {
 					echo '<dl class="categorized">';
-					//echo '<dt><span class="categorized-default">Categorized</span></dt>';
 					foreach ( $university_categories as $category ) {
 						$category = sanitize_term( $category, 'wsuwp_university_category' );
 						echo '<dd><a href="' . esc_attr( get_term_link( $category, 'wsuwp_university_category' ) ) . '">' . esc_html( $category->name ) . '</a></dd>';
 					}
-					//echo '</dl>';
 				}
 
 				if ( has_tag() ) {
 					echo '<dl class="tagged">';
-					//echo '<dt><span class="tagged-default">Tagged</span></dt>';
 					foreach ( get_the_tags() as $tag ) {
 						echo '<dd><a href="' . esc_attr( get_tag_link( $tag->term_id ) ) . '">' . esc_html( $tag->name ) . '</a></dd>';
 					}
