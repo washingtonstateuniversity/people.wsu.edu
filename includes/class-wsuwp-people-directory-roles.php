@@ -47,6 +47,7 @@ class WSUWP_People_Directory_Roles {
 		add_action( 'personal_options', array( $this, 'extend_user_profile' ) );
 		add_action( 'personal_options_update', array( $this, 'save_user_organization' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'save_user_organization' ) );
+		add_filter( 'user_has_cap', array( $this, 'unit_administration' ), 10, 4 );
 	}
 
 	/**
@@ -211,5 +212,37 @@ class WSUWP_People_Directory_Roles {
 			wp_set_object_terms( $user_id, $terms, 'wsuwp_university_org' );
 			clean_object_term_cache( $user_id, 'wsuwp_university_org' );
 		}
+	}
+
+	/**
+	 * Filters a Unit Admin's ability to edit people posts.
+	 *
+	 * @param array $allcaps
+	 * @param array $caps
+	 * @param array $args
+	 * @param WP_User $user
+	 *
+	 * @return array
+	 */
+	public function unit_administration( $allcaps, $caps, $args, $user ) {
+		if ( 'edit_post' !== $args[0] ) {
+			return $allcaps;
+		}
+
+		if ( ! in_array( self::$roles['unit_admin'], $user->roles, true ) ) {
+			return $allcaps;
+		}
+
+		$terms_args = array(
+			'fields' => 'ids',
+		);
+		$user_orgs = wp_get_object_terms( $user->ID, 'wsuwp_university_org', $terms_args );
+		$post_orgs = wp_get_post_terms( $args[2], 'wsuwp_university_org', $terms_args );
+
+		if ( empty( array_intersect( $user_orgs, $post_orgs ) ) ) {
+			$allcaps['edit_others_profiles'] = false;
+		}
+
+		return $allcaps;
 	}
 }
