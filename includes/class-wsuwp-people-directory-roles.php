@@ -49,6 +49,7 @@ class WSUWP_People_Directory_Roles {
 		add_action( 'edit_user_profile_update', array( $this, 'save_user_organization' ) );
 		add_filter( 'user_has_cap', array( $this, 'unit_administration' ), 10, 4 );
 		add_action( 'pre_get_posts', array( $this, 'filter_list_tables' ) );
+		add_filter( 'views_edit-wsuwp_people_profile', array( $this, 'people_views' ) );
 	}
 
 	/**
@@ -293,5 +294,27 @@ class WSUWP_People_Directory_Roles {
 				) );
 			}
 		}
+	}
+
+	/**
+	 * Modifies the list table view links for Unit Admins.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param array $views
+	 *
+	 * @return array
+	 */
+	public function people_views( $views ) {
+		$user = wp_get_current_user();
+
+		if ( ! in_array( self::$roles['unit_admin'], $user->roles, true ) ) {
+			return $views;
+		}
+
+		unset( $views['publish'] );
+		unset( $views['trash'] );
+
+		return $views;
 	}
 }
