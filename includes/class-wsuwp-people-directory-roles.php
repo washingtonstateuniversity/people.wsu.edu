@@ -312,8 +312,31 @@ class WSUWP_People_Directory_Roles {
 			return $views;
 		}
 
+		unset( $views['all'] );
 		unset( $views['publish'] );
 		unset( $views['trash'] );
+
+		$organizations = wp_get_object_terms( $user->ID, 'wsuwp_university_org', array(
+			'fields' => 'ids',
+		) );
+
+		$people_query_args = array(
+			'post_type' => 'wsuwp_people_profile',
+			'posts_per_page' => -1,
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'wsuwp_university_org',
+					'terms' => $organizations,
+				),
+			),
+		);
+
+		$people = new WP_Query( $people_query_args );
+		$current = ( 1 < count( $_GET ) ) ? '' : ' class="current"'; //@codingStandardsIgnoreLine
+
+		$views = array(
+			'all' => '<a href="edit.php?post_type=wsuwp_people_profile"' . $current . '>All <span class="count">(' . $people->found_posts . ')</span></a>',
+		) + $views;
 
 		return $views;
 	}
