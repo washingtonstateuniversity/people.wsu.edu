@@ -43,6 +43,10 @@ class WSUWP_People_Directory_Roles {
 		add_action( 'after_switch_theme', array( $this, 'add_roles' ) );
 		add_action( 'switch_theme', array( $this, 'remove_roles' ) );
 		add_action( 'init', array( $this, 'map_role_capabilities' ), 12 );
+		add_action( 'init', array( $this, 'register_wsu_orgs_for_users' ) );
+		add_action( 'personal_options', array( $this, 'extend_user_profile' ) );
+		add_action( 'personal_options_update', array( $this, 'save_user_organization' ) );
+		add_action( 'edit_user_profile_update', array( $this, 'save_user_organization' ) );
 	}
 
 	/**
@@ -115,6 +119,97 @@ class WSUWP_People_Directory_Roles {
 			foreach ( $taxonomies as $taxonomy ) {
 				$taxonomy->cap->assign_terms = 'edit_profiles';
 			}
+		}
+	}
+
+	/**
+	 * Register the University Organizations taxonomy for the user object.
+	 *
+	 * @since 0.1.0
+	 */
+	public function register_wsu_orgs_for_users() {
+		register_taxonomy_for_object_type( 'wsuwp_university_org', 'user' );
+	}
+
+	/**
+	 * Adds an area to the "edit user/profile" page for associating users with a University Organization.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param object $user The user object currently being edited.
+	 */
+	public function extend_user_profile( $user ) {
+
+		// This only needs to be added for users with the Unit Admin role...
+		if ( ! in_array( self::$roles['unit_admin'], (array) $user->roles, true ) ) {
+			return;
+		}
+
+		// And only when they aren't editing their profiles.
+		if ( wp_get_current_user()->ID === $user->ID ) {
+			return;
+		}
+
+		$taxonomy = get_taxonomy( 'wsuwp_university_org' );
+
+		if ( ! current_user_can( $taxonomy->cap->assign_terms ) ) {
+			return;
+		}
+
+		$terms = get_terms( 'wsuwp_university_org', array(
+			'hide_empty' => false,
+		) );
+
+		if ( ! is_array( $terms ) || empty( $terms ) ) {
+			return;
+		}
+
+		wp_nonce_field( 'save-user-org', '_user_org_nonce' );
+
+		?>
+
+		<tr>
+			<th scope="row">Organization</th>
+			<td>
+				<ul>
+				<?php foreach ( $terms as $term ) { ?>
+					<li>
+						<label>
+							<input <?php checked( true, is_object_in_term( $user->ID, 'wsuwp_university_org', $term ) ); ?>
+								type="checkbox"
+								name="wsuwp_university_org[]"
+								value="<?php echo esc_attr( $term->term_id ); ?>" /> <?php echo esc_html( $term->name ); ?>
+						</label>
+					</li>
+				<?php } ?>
+				</ul>
+			</td>
+		</tr>
+
+		<?php
+	}
+
+	/**
+	 * Adds selected terms to the user.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param int $user_id The ID of the user to save the additional data for.
+	 */
+	public function save_user_organization( $user_id ) {
+		if ( ! isset( $_POST['_user_org_nonce'] ) || ! wp_verify_nonce( $_POST['_user_org_nonce'], 'save-user-org' ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_user', $user_id ) ) {
+			return;
+		}
+
+		if ( isset( $_POST['wsuwp_university_org'] ) ) {
+			$terms = array_map( 'absint', $_POST['wsuwp_university_org'] );
+
+			wp_set_object_terms( $user_id, $terms, 'wsuwp_university_org' );
+			clean_object_term_cache( $user_id, 'wsuwp_university_org' );
 		}
 	}
 }
