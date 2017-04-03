@@ -5,7 +5,7 @@
 	<header class="wsuwp-person-profile-header">
 		<hgroup>
 		<?php if ( is_single() ) : ?>
-			<?php if (  'true' === spine_get_option( 'articletitle_show' ) ) : ?>
+			<?php if ( 'true' === spine_get_option( 'articletitle_show' ) ) : ?>
 				<h1 class="wsuwp-person-name"><?php the_title(); ?></h1>
 			<?php endif; ?>
 		<?php else : ?>
@@ -41,9 +41,15 @@
 
 		// Taxonomy data.
 		$departments     = wp_get_post_terms( get_the_ID(), 'wsuwp_university_org' );
-		$appointments    = wp_get_post_terms( get_the_ID(), 'appointment', array( 'fields' => 'names' ) );
-		$classifications = wp_get_post_terms( get_the_ID(), 'classification', array( 'fields' => 'names' ) );
-		$locations       = wp_get_post_terms( get_the_ID(), 'wsuwp_university_location', array( 'fields' => 'names' ) );
+		$appointments    = wp_get_post_terms( get_the_ID(), 'appointment', array(
+			'fields' => 'names',
+		) );
+		$classifications = wp_get_post_terms( get_the_ID(), 'classification', array(
+			'fields' => 'names',
+		) );
+		$locations       = wp_get_post_terms( get_the_ID(), 'wsuwp_university_location', array(
+			'fields' => 'names',
+		) );
 
 		if ( is_single() && $degrees && is_array( $degrees ) ) {
 			?><ul class="wsuwp-person-education">
