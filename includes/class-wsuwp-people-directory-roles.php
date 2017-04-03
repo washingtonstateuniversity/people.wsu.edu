@@ -48,6 +48,7 @@ class WSUWP_People_Directory_Roles {
 		add_action( 'personal_options_update', array( $this, 'save_user_organization' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'save_user_organization' ) );
 		add_filter( 'user_has_cap', array( $this, 'unit_administration' ), 10, 4 );
+		add_action( 'pre_get_posts', array( $this, 'filter_list_tables' ) );
 	}
 
 	/**
@@ -244,5 +245,53 @@ class WSUWP_People_Directory_Roles {
 		}
 
 		return $allcaps;
+	}
+
+	/**
+	 * Filters a user's view of the media library and people list table.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param WP_Query $query
+	 */
+	public function filter_list_tables( $query ) {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+
+		if ( empty( array_intersect( self::$roles, $user->roles ) ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		// Show users with either custom role only their media.
+		if ( 'upload' === $screen->id || ( isset( $_REQUEST['action'] ) && 'query-attachments' === $_REQUEST['action'] ) ) { //@codingStandardsIgnoreLine
+			$query->set( 'author', $user->ID );
+		}
+
+		if ( ! in_array( self::$roles['unit_admin'], $user->roles, true ) ) {
+			return;
+		}
+
+		// Show Unit Admins only the people posts they share University Organizations with.
+		if ( 'edit-wsuwp_people_profile' === $screen->id ) {
+			$terms_args = array(
+				'fields' => 'ids',
+			);
+			$user_orgs = wp_get_object_terms( $user->ID, 'wsuwp_university_org', $terms_args );
+
+			if ( is_array( $user_orgs ) ) {
+				$query->set( 'tax_query', array(
+					array(
+						'taxonomy' => 'wsuwp_university_org',
+						'field' => 'id',
+						'terms' => $user_orgs,
+					),
+				) );
+			}
+		}
 	}
 }
