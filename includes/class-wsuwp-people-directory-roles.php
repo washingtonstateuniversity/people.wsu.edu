@@ -57,7 +57,7 @@ class WSUWP_People_Directory_Roles {
 	 *
 	 * @since 0.1.0
 	 */
-	public static function add_roles() {
+	public function add_roles() {
 		add_role(
 			self::$roles['owner'],
 			'Profile Owner',
@@ -89,7 +89,7 @@ class WSUWP_People_Directory_Roles {
 	 *
 	 * @since 0.1.0
 	 */
-	public static function remove_roles() {
+	public function remove_roles() {
 		remove_role( self::$roles['owner'] );
 		remove_role( self::$roles['unit_admin'] );
 	}
