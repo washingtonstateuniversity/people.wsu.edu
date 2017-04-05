@@ -13,7 +13,7 @@ class WSUWP_People_Directory_Roles {
 	 *
 	 * @var array Names for custom VALS roles.
 	 */
-	private static $roles = array(
+	private $roles = array(
 		'owner' => 'wsuwp_people_profile_owner',
 		'unit_admin' => 'wsuwp_people_unit_admin',
 	);
@@ -59,7 +59,7 @@ class WSUWP_People_Directory_Roles {
 	 */
 	public function add_roles() {
 		add_role(
-			self::$roles['owner'],
+			$this->roles['owner'],
 			'Profile Owner',
 			array(
 				'edit_profiles' => true,
@@ -70,7 +70,7 @@ class WSUWP_People_Directory_Roles {
 		);
 
 		add_role(
-			self::$roles['unit_admin'],
+			$this->roles['unit_admin'],
 			'Unit Admin',
 			array(
 				'create_profiles' => true,
@@ -90,8 +90,8 @@ class WSUWP_People_Directory_Roles {
 	 * @since 0.1.0
 	 */
 	public function remove_roles() {
-		remove_role( self::$roles['owner'] );
-		remove_role( self::$roles['unit_admin'] );
+		remove_role( $this->roles['owner'] );
+		remove_role( $this->roles['unit_admin'] );
 	}
 
 	/**
@@ -102,7 +102,7 @@ class WSUWP_People_Directory_Roles {
 	public function map_role_capabilities() {
 		$user = wp_get_current_user();
 
-		if ( empty( array_intersect( self::$roles, $user->roles ) ) ) {
+		if ( empty( array_intersect( $this->roles, $user->roles ) ) ) {
 			return;
 		}
 
@@ -144,7 +144,7 @@ class WSUWP_People_Directory_Roles {
 	public function extend_user_profile( $user ) {
 
 		// This only needs to be added for users with the Unit Admin role...
-		if ( ! in_array( self::$roles['unit_admin'], (array) $user->roles, true ) ) {
+		if ( ! in_array( $this->roles['unit_admin'], (array) $user->roles, true ) ) {
 			return;
 		}
 
@@ -231,7 +231,7 @@ class WSUWP_People_Directory_Roles {
 			return $allcaps;
 		}
 
-		if ( ! in_array( self::$roles['unit_admin'], $user->roles, true ) ) {
+		if ( ! in_array( $this->roles['unit_admin'], $user->roles, true ) ) {
 			return $allcaps;
 		}
 
@@ -262,7 +262,7 @@ class WSUWP_People_Directory_Roles {
 
 		$user = wp_get_current_user();
 
-		if ( empty( array_intersect( self::$roles, $user->roles ) ) ) {
+		if ( empty( array_intersect( $this->roles, $user->roles ) ) ) {
 			return;
 		}
 
@@ -273,7 +273,7 @@ class WSUWP_People_Directory_Roles {
 			$query->set( 'author', $user->ID );
 		}
 
-		if ( ! in_array( self::$roles['unit_admin'], $user->roles, true ) ) {
+		if ( ! in_array( $this->roles['unit_admin'], $user->roles, true ) ) {
 			return;
 		}
 
@@ -308,7 +308,7 @@ class WSUWP_People_Directory_Roles {
 	public function people_views( $views ) {
 		$user = wp_get_current_user();
 
-		if ( ! in_array( self::$roles['unit_admin'], $user->roles, true ) ) {
+		if ( ! in_array( $this->roles['unit_admin'], $user->roles, true ) ) {
 			return $views;
 		}
 
