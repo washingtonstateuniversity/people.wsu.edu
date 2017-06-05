@@ -28,15 +28,8 @@ function WSUWP_People_Directory_Roles() {
 }
 
 /**
- * Exposes the people post type through the REST API.
+ * Disables the secondary components of the people plugin.
  *
  * @since 0.1.0
  */
-add_filter( 'wsuwp_people_show_in_rest', '__return_true' );
-
-/**
- * Disables the display components of the people plugin.
- *
- * @since 0.1.0
- */
-add_filter( 'wsuwp_people_display', '__return_false' );
+add_filter( 'wsuwp_people_is_main_site', '__return_true' );
