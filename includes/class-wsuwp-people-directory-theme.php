@@ -73,8 +73,10 @@ class WSUWP_People_Directory_Theme {
 	 * @since 0.1.0
 	 */
 	public function rewrite_rules() {
-		add_rewrite_tag( '%wsuwp_person%', '([^/]+)', WSUWP_People_Post_Type::$post_type_slug . '=' );
-		add_permastruct( 'person', '/profile/%wsuwp_person%/', false );
+		if ( class_exists( 'WSUWP_People_Post_Type' ) ) {
+			add_rewrite_tag( '%wsuwp_person%', '([^/]+)', WSUWP_People_Post_Type::$post_type_slug . '=' );
+			add_permastruct( 'person', '/profile/%wsuwp_person%/', false );
+		}
 	}
 
 	/**
