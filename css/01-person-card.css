@@ -1,23 +1,10 @@
-/*
- Theme Name:     WSU People Theme
- Theme URI:      http://people.wsu.edu
- Description:    A child theme of the WSU Spine for people.wsu.edu
- Author:         WSU University Communications
- Author URI:     https://web.wsu.edu
- Template:       spine
- Version:        0.0.1
-*/
-
 .wsu-person * {
 	margin: 0;
 }
 
 .wsu-person .card {
-	display: -webkit-box;
-	display: -ms-flexbox;
 	display: flex;
-	-ms-flex-wrap: wrap;
-	    flex-wrap: wrap;
+	flex-wrap: wrap;
 }
 
 .wsu-person header {
@@ -64,4 +51,3 @@
 .wsu-person .about {
 	margin-top: 1rem;
 }
-/*# sourceMappingURL=style.css.map */
