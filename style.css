@@ -54,14 +54,28 @@
 }
 
 .wsu-person .photo + .contact {
-	margin-left: 1.5rem;
+	margin: 1.5rem 0 0;
 }
 
 .wsu-person .contact span {
 	display: block;
 }
 
+.wsu-person .website {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .wsu-person .about {
 	margin-top: 1rem;
+}
+
+@media screen and (min-width: 480px) {
+
+	.wsu-person .photo + .contact {
+		margin: 0 0 0 1.5rem;
+		width: calc(100% - 198px - 1.5rem);
+	}
+
 }
 /*# sourceMappingURL=style.css.map */
