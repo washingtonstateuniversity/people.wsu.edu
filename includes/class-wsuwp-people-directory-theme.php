@@ -13,7 +13,7 @@ class WSUWP_People_Directory_Theme {
 	 *
 	 * @var string String used for busting cache on scripts.
 	 */
-	public $script_version = '0.1.0';
+	public $script_version = '0.1.1';
 
 	/**
 	 * Maintain and return the one instance and initiate hooks when
