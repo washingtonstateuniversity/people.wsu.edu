@@ -38,7 +38,6 @@ class WSUWP_People_Directory_Theme {
 	 */
 	public function setup_hooks() {
 		add_filter( 'spine_child_theme_version', array( $this, 'theme_version' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 11 );
 		add_action( 'init', array( $this, 'rewrite_rules' ), 11 );
 		add_filter( 'post_type_link', array( $this, 'person_permalink' ), 10, 2 );
 		add_filter( 'wsuwp_people_get_organization_person_data', array( $this, 'get_person_by_id' ), 10, 2 );
@@ -53,18 +52,6 @@ class WSUWP_People_Directory_Theme {
 	 */
 	public function theme_version() {
 		return $this->script_version;
-	}
-
-	/**
-	 * Enqueue child theme Scripts and Styles
-	 *
-	 * @since 0.1.0
-	 */
-	public function enqueue_scripts() {
-		wp_enqueue_style( 'dashicons' );
-		if ( 'wsuwp_people_profile' === get_post_type() && is_single() ) {
-			wp_enqueue_script( 'wsuwp-people-profile-script', get_stylesheet_directory_uri() . '/js/profile.js', array( 'jquery' ), $this->script_version, true );
-		}
 	}
 
 	/**
