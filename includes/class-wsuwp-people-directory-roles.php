@@ -266,10 +266,8 @@ class WSUWP_People_Directory_Roles {
 			return;
 		}
 
-		$screen = get_current_screen();
-
 		// Show users with either custom role only their media.
-		if ( 'upload' === $screen->id || ( isset( $_REQUEST['action'] ) && 'query-attachments' === $_REQUEST['action'] ) ) { //@codingStandardsIgnoreLine
+		if ( 'attachment' === $query->query['post_type'] ) {
 			$query->set( 'author', $user->ID );
 		}
 
@@ -278,7 +276,7 @@ class WSUWP_People_Directory_Roles {
 		}
 
 		// Show Unit Admins only the people posts they share University Organizations with.
-		if ( 'edit-wsuwp_people_profile' === $screen->id ) {
+		if ( 'wsuwp_people_profile' === $query->query['post_type'] ) {
 			$terms_args = array(
 				'fields' => 'ids',
 			);
