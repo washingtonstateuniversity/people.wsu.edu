@@ -50,6 +50,8 @@ class WSUWP_People_Directory_Roles {
 		add_filter( 'user_has_cap', array( $this, 'unit_administration' ), 10, 4 );
 		add_action( 'pre_get_posts', array( $this, 'filter_list_tables' ) );
 		add_filter( 'views_edit-wsuwp_people_profile', array( $this, 'people_views' ) );
+		add_action( 'admin_menu', array( $this, 'profile_owner_admin_menu' ) );
+		add_action( 'parent_file', array( $this, 'profile_owner_menu_item' ) );
 	}
 
 	/**
@@ -337,5 +339,82 @@ class WSUWP_People_Directory_Roles {
 		) + $views;
 
 		return $views;
+	}
+
+	/**
+	 * Return the post edit link for a Profile Owner's profile.
+	 *
+	 * @since 0.1.2
+	 *
+	 * @return string|false
+	 */
+	public function get_wsu_profile_edit_link() {
+		$user = wp_get_current_user();
+
+		if ( ! in_array( $this->roles['owner'], $user->roles, true ) ) {
+			return false;
+		}
+
+		$profile = get_posts( array(
+			'posts_per_page' => 1,
+			'post_type' => 'wsuwp_people_profile',
+			'meta_key' => '_wsuwp_profile_ad_nid',
+			'meta_value' => $user->user_login,
+		) );
+
+		if ( $profile ) {
+			return get_edit_post_link( $profile[0]->ID, '' );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Modifies the admin menu for Profile Owners.
+	 *
+	 * @since 0.1.2
+	 */
+	public function profile_owner_admin_menu() {
+		$profile_link = $this->get_wsu_profile_edit_link();
+
+		if ( $profile_link ) {
+			global $menu;
+
+			remove_menu_page( 'edit.php?post_type=wsuwp_people_profile' );
+
+			$profiles_override = array(
+				6 => array(
+					'Profiles',
+					'read',
+					$profile_link,
+					'',
+					'menu-top menu-icon-wsuwp_people_profile',
+					'menu-posts-wsuwp_people_profile',
+					'dashicons-groups',
+				),
+			);
+
+			array_splice( $menu, 2, 0, $profiles_override );
+		}
+	}
+
+	/**
+	 * Sets the modified Profiles admin menu item as current
+	 * when a Profile Owner is editing their profile.
+	 *
+	 * @since 0.1.2
+	 *
+	 * @param string
+	 *
+	 * @return string
+	 */
+	public function profile_owner_menu_item( $file ) {
+		$profile_link = $this->get_wsu_profile_edit_link();
+
+		if ( $profile_link && 'wsuwp_people_profile' === get_current_screen()->id ) {
+			return $profile_link;
+		}
+
+		return $file;
 	}
 }
