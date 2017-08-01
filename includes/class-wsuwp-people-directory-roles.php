@@ -44,6 +44,7 @@ class WSUWP_People_Directory_Roles {
 		add_action( 'switch_theme', array( $this, 'remove_roles' ) );
 		add_action( 'init', array( $this, 'map_role_capabilities' ), 12 );
 		add_action( 'init', array( $this, 'register_wsu_orgs_for_users' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 11 );
 		add_action( 'personal_options', array( $this, 'extend_user_profile' ) );
 		add_action( 'personal_options_update', array( $this, 'save_user_organization' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'save_user_organization' ) );
@@ -137,6 +138,24 @@ class WSUWP_People_Directory_Roles {
 	}
 
 	/**
+	 * Enqueues stylesheets for the Edit User page.
+	 *
+	 * @since 0.1.2
+	 *
+	 * @param string $hook_suffix
+	 */
+	public function admin_enqueue_scripts( $hook_suffix ) {
+		if ( 'user-edit.php' !== $hook_suffix ) {
+			return;
+		}
+
+		wp_enqueue_style( 'select2' );
+		wp_enqueue_style( 'wsuwp-select2' );
+		wp_enqueue_script( 'select2' );
+		wp_enqueue_script( 'wsuwp-select2' );
+	}
+
+	/**
 	 * Adds an area to the "edit user/profile" page for associating users with a University Organization.
 	 *
 	 * @since 0.1.0
@@ -155,39 +174,40 @@ class WSUWP_People_Directory_Roles {
 			return;
 		}
 
-		$taxonomy = get_taxonomy( 'wsuwp_university_org' );
+		$taxonomy = 'wsuwp_university_org';
 
-		if ( ! current_user_can( $taxonomy->cap->assign_terms ) ) {
+		if ( ! current_user_can( get_taxonomy( $taxonomy )->cap->assign_terms ) ) {
 			return;
 		}
 
-		$terms = get_terms( 'wsuwp_university_org', array(
+		$dropdown_args = array(
+			'class' => 'taxonomy-select2',
+			'echo' => false,
 			'hide_empty' => false,
-		) );
+			'hierarchical' => true,
+			'id' => $taxonomy,
+			'name' => 'wsuwp_university_org[]',
+			'taxonomy' => $taxonomy,
+		);
 
-		if ( ! is_array( $terms ) || empty( $terms ) ) {
-			return;
+		$dropdown = wp_dropdown_categories( $dropdown_args );
+		$dropdown = str_replace( '<select', '<select multiple="multiple"', $dropdown );
+		$dropdown = str_replace( '&nbsp;', '', $dropdown );
+
+		$selected_terms = wp_get_object_terms( $user->ID, $taxonomy );
+
+		if ( $selected_terms && ! is_wp_error( $selected_terms ) ) {
+			foreach ( $selected_terms as $term ) {
+				$value = ( 'post_tag' === $taxonomy ) ? $term->name : $term->term_id;
+				$dropdown = str_replace( 'value="' . esc_attr( $value ) . '"', 'value="' . esc_attr( $value ) . '" selected="selected"', $dropdown );
+			}
 		}
-
-		wp_nonce_field( 'save-user-org', '_user_org_nonce' );
-
 		?>
 
 		<tr>
-			<th scope="row">Organization</th>
+			<th scope="row"><label for="<?php echo esc_attr( $taxonomy ); ?>">Administrator For</label></th>
 			<td>
-				<ul>
-				<?php foreach ( $terms as $term ) { ?>
-					<li>
-						<label>
-							<input <?php checked( true, is_object_in_term( $user->ID, 'wsuwp_university_org', $term ) ); ?>
-								type="checkbox"
-								name="wsuwp_university_org[]"
-								value="<?php echo esc_attr( $term->term_id ); ?>" /> <?php echo esc_html( $term->name ); ?>
-						</label>
-					</li>
-				<?php } ?>
-				</ul>
+				<?php echo $dropdown; // @codingStandardsIgnoreLine ?>
 			</td>
 		</tr>
 
