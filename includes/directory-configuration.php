@@ -9,36 +9,21 @@ namespace WSU\Theme\People\Directory_Configuration;
  */
 add_filter( 'wsuwp_people_is_main_site', '__return_true' );
 
-add_action( 'init', 'WSU\Theme\People\Directory_Configuration\rewrite_rules', 11 );
-add_filter( 'post_type_link', 'WSU\Theme\People\Directory_Configuration\person_permalink', 10, 2 );
+add_filter( 'wsuwp_people_default_rewrite_slug', 'WSU\Theme\People\Directory_Configuration\rewrite_arguments' );
 add_filter( 'wsuwp_people_get_organization_person_data', 'WSU\Theme\People\Directory_Configuration\get_person_by_id', 10, 2 );
 
 /**
- * Adds rewrite rules for handling people and person views.
+ * Filter the rewrite arguments passed to register_post_type by the people directory.
  *
- * @since 0.1.0
+ * @param array|bool $rewrite False by default. Array if previously filtered.
+ *
+ * @return array
  */
-function rewrite_rules() {
-	if ( class_exists( 'WSUWP_People_Post_Type' ) ) {
-		add_rewrite_tag( '%wsuwp_person%', '([^/]+)', \WSUWP_People_Post_Type::$post_type_slug . '=' );
-		add_permastruct( 'person', '/profile/%wsuwp_person%/', false );
-	}
-}
-
-/**
- * Changes the permalink structure for individual people posts.
- *
- * @since 0.1.0
- *
- * @param string $url  The post URL.
- * @param object $post The post object.
- */
-function person_permalink( $url, $post ) {
-	if ( 'wsuwp_people_profile' === get_post_type( $post ) ) {
-		$url = get_site_url() . '/profile/' . $post->post_name . '/';
-	}
-
-	return $url;
+function rewrite_arguments( $rewrite ) {
+	return array(
+		'slug' => 'profile',
+		'with_front' => false,
+	);
 }
 
 /**
