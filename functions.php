@@ -1,35 +1,14 @@
 <?php
 
-require_once( dirname( __FILE__ ) . '/includes/class-wsuwp-people-directory-theme.php' );
-require_once( dirname( __FILE__ ) . '/includes/class-wsuwp-people-directory-roles.php' );
+include_once __DIR__ . '/includes/directory-configuration.php';
+include_once __DIR__ . '/includes/roles-and-capabilities.php';
 
-add_action( 'after_setup_theme', 'WSUWP_People_Directory_Theme' );
+add_filter( 'spine_child_theme_version', 'people_theme_version' );
 /**
- * Starts the main class controlling the theme.
- *
  * @since 0.1.0
  *
- * @return \WSUWP_People_Directory_Theme
+ * @var string String used for busting cache on scripts.
  */
-function WSUWP_People_Directory_Theme() {
-	return WSUWP_People_Directory_Theme::get_instance();
+function people_theme_version() {
+	return '0.1.1';
 }
-
-add_action( 'after_setup_theme', 'WSUWP_People_Directory_Roles' );
-/**
- * Starts the roles and capabilities functionality.
- *
- * @since 0.1.0
- *
- * @return \WSUWP_People_Directory_Roles
- */
-function WSUWP_People_Directory_Roles() {
-	return WSUWP_People_Directory_Roles::get_instance();
-}
-
-/**
- * Disables the secondary components of the people plugin.
- *
- * @since 0.1.0
- */
-add_filter( 'wsuwp_people_is_main_site', '__return_true' );
