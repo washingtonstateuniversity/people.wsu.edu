@@ -101,6 +101,13 @@ function organization_data_check() {
 
 	global $post;
 
+	$previous_check = get_post_meta( $post->ID, '_wsuwp_profile_ad_data_check', true );
+
+	// Stop here if this check has been performed in the last 24 hours.
+	if ( $previous_check >= strtotime( '-24 hours' ) ) {
+		return;
+	}
+
 	$nid = get_post_meta( $post->ID, '_wsuwp_profile_ad_nid', true );
 	$ad_data = array_map( 'sanitize_text_field', get_person_by_id( '', $nid ) );
 
@@ -112,9 +119,13 @@ function organization_data_check() {
 	$phone = get_post_meta( $post->ID, '_wsuwp_profile_ad_phone', true );
 	$email = get_post_meta( $post->ID, '_wsuwp_profile_ad_email', true );
 
+	// Stop here if the AD data is empty.
 	if ( empty( $ad_data ) ) {
 		return;
 	}
+
+	// Update the data check meta with the current time.
+	update_post_meta( $post->ID, '_wsuwp_profile_ad_data_check', strtotime( 'now' ) );
 
 	if ( $ad_data['given_name'] !== $name_first ) {
 		update_post_meta( $post->ID, '_wsuwp_profile_ad_name_first', $ad_data['given_name'] );
