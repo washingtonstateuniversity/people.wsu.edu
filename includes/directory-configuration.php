@@ -95,7 +95,7 @@ function get_person_by_id( $data, $nid ) {
 function organization_data_check() {
 	$current_screen = get_current_screen();
 
-	if ( 'wsuwp_people_profile' !== $current_screen->post_type || 'add' === $current_screen->action ) {
+	if ( 'wsuwp_people_profile' !== $current_screen->post_type || 'add' === $current_screen->action || 'post' !== $current_screen->base ) {
 		return;
 	}
 
