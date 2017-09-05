@@ -102,7 +102,7 @@ function organization_data_check() {
 	global $post;
 
 	$nid = get_post_meta( $post->ID, '_wsuwp_profile_ad_nid', true );
-	$ad_data = get_person_by_id( '', $nid );
+	$ad_data = array_map( 'sanitize_text_field', get_person_by_id( '', $nid ) );
 
 	$name_first = get_post_meta( $post->ID, '_wsuwp_profile_ad_name_first', true );
 	$name_last = get_post_meta( $post->ID, '_wsuwp_profile_ad_name_last', true );
