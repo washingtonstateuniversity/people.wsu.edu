@@ -1,7 +1,7 @@
 <?php
 
-include_once __DIR__ . '/includes/directory-configuration.php';
-include_once __DIR__ . '/includes/roles-and-capabilities.php';
+require_once __DIR__ . '/includes/directory-configuration.php';
+require_once __DIR__ . '/includes/roles-and-capabilities.php';
 
 add_filter( 'spine_child_theme_version', 'people_theme_version' );
 /**
