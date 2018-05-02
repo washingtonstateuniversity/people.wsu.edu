@@ -22,5 +22,7 @@
         <exclude name="Squiz.PHP.EmbeddedPhp.ContentBeforeOpen" />
         <exclude name="Squiz.PHP.EmbeddedPhp.ContentAfterOpen" />
         <exclude name="Squiz.PHP.EmbeddedPhp.ContentAfterEnd" />
+        <exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned" />
+        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning" />
     </rule>
 </ruleset>
