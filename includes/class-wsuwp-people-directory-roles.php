@@ -207,7 +207,25 @@ class WSUWP_People_Directory_Roles {
 		<tr>
 			<th scope="row"><label for="<?php echo esc_attr( $taxonomy ); ?>">Administrator For</label></th>
 			<td>
-				<?php echo $dropdown; // @codingStandardsIgnoreLine ?>
+				<?php
+				$allowed = array(
+					'select' => array(
+						'class' => array(),
+						'name' => array(),
+						'id' => array(),
+						'multiple' => array(),
+					),
+					'option' => array(
+						'class' => array(),
+						'value' => array(),
+						'selected' => array(),
+					),
+				);
+
+				echo wp_kses( $dropdown, $allowed );
+
+				wp_nonce_field( 'save-user-org', '_user_org_nonce' );
+				?>
 			</td>
 		</tr>
 
@@ -235,6 +253,8 @@ class WSUWP_People_Directory_Roles {
 
 			wp_set_object_terms( $user_id, $terms, 'wsuwp_university_org' );
 			clean_object_term_cache( $user_id, 'wsuwp_university_org' );
+		} else {
+			wp_set_object_terms( $user_id, '', 'wsuwp_university_org' );
 		}
 	}
 
