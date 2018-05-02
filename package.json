@@ -6,16 +6,16 @@
     "url": "https://github.com/washingtonstateuniversity/people.wsu.edu"
   },
   "devDependencies": {
-    "autoprefixer": "^7.1.2",
-    "grunt": "~1.0.1",
+    "autoprefixer": "^8.4.1",
+    "grunt": "~1.0.2",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "~1.0.0",
     "grunt-contrib-connect": "^1.0.2",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-postcss": "^0.8.0",
+    "grunt-contrib-watch": "^1.0.1",
+    "grunt-postcss": "^0.9.0",
     "grunt-phpcs": "^0.4.0",
-    "grunt-stylelint": "^0.9.0",
-    "postcss": "^6.0.0",
-    "stylelint": "^8.0.0"
+    "grunt-stylelint": "^0.10.0",
+    "postcss": "^6.0.22",
+    "stylelint": "^9.2.0"
   }
 }
