@@ -6,6 +6,7 @@ add_action( 'after_switch_theme', 'WSU\Theme\People\Roles_And_Capabilities\add_r
 add_action( 'switch_theme', 'WSU\Theme\People\Roles_And_Capabilities\remove_roles' );
 add_action( 'init', 'WSU\Theme\People\Roles_And_Capabilities\map_role_capabilities', 12 );
 add_action( 'init', 'WSU\Theme\People\Roles_And_Capabilities\register_wsu_orgs_for_users' );
+add_action( 'admin_enqueue_scripts', 'WSU\Theme\People\Roles_And_Capabilities\admin_enqueue_scripts', 11 );
 add_action( 'personal_options', 'WSU\Theme\People\Roles_And_Capabilities\extend_user_profile' );
 add_action( 'personal_options_update', 'WSU\Theme\People\Roles_And_Capabilities\save_user_organization' );
 add_action( 'edit_user_profile_update', 'WSU\Theme\People\Roles_And_Capabilities\save_user_organization' );
@@ -112,6 +113,24 @@ function register_wsu_orgs_for_users() {
 }
 
 /**
+ * Enqueues stylesheets for the Edit User page.
+ *
+ * @since 0.1.2
+ *
+ * @param string $hook_suffix
+ */
+function admin_enqueue_scripts( $hook_suffix ) {
+	if ( 'user-edit.php' !== $hook_suffix ) {
+		return;
+	}
+
+	wp_enqueue_style( 'select2' );
+	wp_enqueue_style( 'wsuwp-select2' );
+	wp_enqueue_script( 'select2' );
+	wp_enqueue_script( 'wsuwp-select2' );
+}
+
+/**
  * Adds an area to the "edit user/profile" page for associating users with a University Organization.
  *
  * @since 0.1.0
@@ -130,39 +149,56 @@ function extend_user_profile( $user ) {
 		return;
 	}
 
-	$taxonomy = get_taxonomy( 'wsuwp_university_org' );
+	$university_organizations = get_taxonomy( 'wsuwp_university_org' );
 
-	if ( ! current_user_can( $taxonomy->cap->assign_terms ) ) {
+	if ( ! current_user_can( $university_organizations->cap->assign_terms ) ) {
 		return;
 	}
 
-	$terms = get_terms( 'wsuwp_university_org', array(
+	$dropdown_args = array(
+		'class' => 'taxonomy-select2',
+		'echo' => false,
 		'hide_empty' => false,
-	) );
-
-	if ( ! is_array( $terms ) || empty( $terms ) ) {
-		return;
-	}
+		'hierarchical' => true,
+		'id' => 'wsuwp_university_org',
+		'name' => 'wsuwp_university_org[]',
+		'taxonomy' => 'wsuwp_university_org',
+	);
 
 	wp_nonce_field( 'save-user-org', '_user_org_nonce' );
+
+	$dropdown = wp_dropdown_categories( $dropdown_args );
+	$dropdown = str_replace( '<select', '<select multiple="multiple"', $dropdown );
+	$dropdown = str_replace( '&nbsp;', '', $dropdown );
+
+	$selected_terms = wp_get_object_terms( $user->ID, 'wsuwp_university_org' );
+
+	if ( $selected_terms && ! is_wp_error( $selected_terms ) ) {
+		foreach ( $selected_terms as $term ) {
+			$dropdown = str_replace( 'value="' . esc_attr( $term->term_id ) . '"', 'value="' . esc_attr( $term->term_id ) . '" selected="selected"', $dropdown );
+		}
+	}
+
+	$allowed = array(
+		'select' => array(
+			'class' => array(),
+			'name' => array(),
+			'id' => array(),
+			'multiple' => array(),
+		),
+		'option' => array(
+			'class' => array(),
+			'value' => array(),
+			'selected' => array(),
+		),
+	);
 
 	?>
 
 	<tr>
-		<th scope="row">Organization</th>
+		<th scope="row"><label for="wsuwp_university_org">Administrator For</label></th>
 		<td>
-			<ul>
-			<?php foreach ( $terms as $term ) { ?>
-				<li>
-					<label>
-						<input <?php checked( true, is_object_in_term( $user->ID, 'wsuwp_university_org', $term ) ); ?>
-							type="checkbox"
-							name="wsuwp_university_org[]"
-							value="<?php echo esc_attr( $term->term_id ); ?>" /> <?php echo esc_html( $term->name ); ?>
-					</label>
-				</li>
-			<?php } ?>
-			</ul>
+			<?php echo wp_kses( $dropdown, $allowed ); ?>
 		</td>
 	</tr>
 
@@ -190,6 +226,8 @@ function save_user_organization( $user_id ) {
 
 		wp_set_object_terms( $user_id, $terms, 'wsuwp_university_org' );
 		clean_object_term_cache( $user_id, 'wsuwp_university_org' );
+	} else {
+		wp_set_object_terms( $user_id, '', 'wsuwp_university_org' );
 	}
 }
 
