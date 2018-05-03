@@ -375,6 +375,10 @@ function profile_ownership( $allcaps, $caps, $args, $user ) {
 		return $allcaps;
 	}
 
+	if ( 'wsuwp_people_profile' !== get_post( $args[2] )->post_type ) {
+		return $allcaps;
+	}
+
 	if ( ! in_array( roles()['owner'], $user->roles, true ) ) {
 		return $allcaps;
 	}
