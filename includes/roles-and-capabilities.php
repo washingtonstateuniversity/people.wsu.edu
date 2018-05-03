@@ -13,6 +13,7 @@ add_action( 'edit_user_profile_update', 'WSU\Theme\People\Roles_And_Capabilities
 add_filter( 'user_has_cap', 'WSU\Theme\People\Roles_And_Capabilities\unit_administration', 10, 4 );
 add_action( 'pre_get_posts', 'WSU\Theme\People\Roles_And_Capabilities\filter_list_tables' );
 add_filter( 'views_edit-wsuwp_people_profile', 'WSU\Theme\People\Roles_And_Capabilities\people_views' );
+add_filter( 'user_has_cap', 'WSU\Theme\People\Roles_And_Capabilities\profile_ownership', 10, 4 );
 add_action( 'admin_menu', 'WSU\Theme\People\Roles_And_Capabilities\profile_owner_admin_menu' );
 add_action( 'parent_file', 'WSU\Theme\People\Roles_And_Capabilities\profile_owner_menu_item' );
 
@@ -40,6 +41,7 @@ function add_roles() {
 		roles()['owner'],
 		'Profile Owner',
 		array(
+			'edit_others_profiles' => true,
 			'edit_profiles' => true,
 			'edit_published_profiles' => true,
 			'read' => true,
@@ -352,6 +354,38 @@ function people_views( $views ) {
 	) + $views;
 
 	return $views;
+}
+
+/**
+ * Filters a Profile Owners's ability to edit their profile post.
+ *
+ * @since 0.1.3
+ *
+ * @param array   $allcaps All the capabilities of the user
+ * @param array   $caps    Required capabilities
+ * @param array   $args    [0] Requested capability
+ *                         [1] User ID
+ *                         [2] Associated object ID
+ * @param WP_User $user    The current WP_User object
+ *
+ * @return array
+ */
+function profile_ownership( $allcaps, $caps, $args, $user ) {
+	if ( 'edit_post' !== $args[0] ) {
+		return $allcaps;
+	}
+
+	if ( ! in_array( roles()['owner'], $user->roles, true ) ) {
+		return $allcaps;
+	}
+
+	$nid = get_post_meta( $args[2], '_wsuwp_profile_ad_nid', true );
+
+	if ( $nid !== $user->user_login ) {
+		$allcaps['edit_others_profiles'] = false;
+	}
+
+	return $allcaps;
 }
 
 /**
