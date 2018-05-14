@@ -136,22 +136,57 @@ function organization_data_check() {
 	}
 
 	if ( $ad_data['title'] !== $title ) {
+		$working_titles = get_post_meta( $post->ID, '_wsuwp_profile_title', true );
+
+		// Update the first user-entered title if it matches the old AD title.
+		// (AD data is stored as the alternative field value until the latter is changed,
+		// so if the values still match, we update them both.)
+		if ( $working_titles[0] === $title ) {
+			$working_titles[0] = $ad_data['title'];
+
+			update_post_meta( $post->ID, '_wsuwp_profile_title', $working_titles );
+		}
+
 		update_post_meta( $post->ID, '_wsuwp_profile_ad_title', $ad_data['title'] );
 	}
 
 	if ( $ad_data['office'] !== $office ) {
+		$office_alternative = get_post_meta( $post->ID, '_wsuwp_profile_alt_office', true );
+
+		if ( $office_alternative === $office ) {
+			update_post_meta( $post->ID, '_wsuwp_profile_alt_office', $ad_data['office'] );
+		}
+
 		update_post_meta( $post->ID, '_wsuwp_profile_ad_office', $ad_data['office'] );
 	}
 
 	if ( $ad_data['street_address'] !== $address ) {
+		$address_alternative = get_post_meta( $post->ID, '_wsuwp_profile_alt_address', true );
+
+		if ( $address_alternative === $address ) {
+			update_post_meta( $post->ID, '_wsuwp_profile_alt_address', $ad_data['street_address'] );
+		}
+
 		update_post_meta( $post->ID, '_wsuwp_profile_ad_address', $ad_data['street_address'] );
 	}
 
 	if ( $ad_data['telephone_number'] !== $phone ) {
+		$phone_alternative = get_post_meta( $post->ID, '_wsuwp_profile_alt_phone', true );
+
+		if ( $phone_alternative === $phone ) {
+			update_post_meta( $post->ID, '_wsuwp_profile_alt_phone', $ad_data['telephone_number'] );
+		}
+
 		update_post_meta( $post->ID, '_wsuwp_profile_ad_phone', $ad_data['telephone_number'] );
 	}
 
 	if ( $ad_data['email'] !== $email ) {
+		$email_alternative = get_post_meta( $post->ID, '_wsuwp_profile_alt_email', true );
+
+		if ( $email_alternative === $email ) {
+			update_post_meta( $post->ID, '_wsuwp_profile_alt_email', $ad_data['email'] );
+		}
+
 		update_post_meta( $post->ID, '_wsuwp_profile_ad_email', $ad_data['email'] );
 	}
 }
