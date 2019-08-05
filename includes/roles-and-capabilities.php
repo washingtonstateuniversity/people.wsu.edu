@@ -60,6 +60,7 @@ function add_roles() {
 			'publish_profiles' => true,
 			'read' => true,
 			'upload_files' => true,
+			'edit_posts' => true,
 		)
 	);
 }
